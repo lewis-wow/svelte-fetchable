@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 
-const post = (path, body) => {
+const post = (path: string, body: any = null) => {
 	const opts: RequestInit = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
