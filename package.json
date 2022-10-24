@@ -1,0 +1,51 @@
+{
+	"name": "svelte-fetchable",
+	"private": false,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "^1.0.2",
+		"svelte": "^3.49.0",
+		"vite": "^3.1.0"
+	},
+	"description": "This template should help get you started developing with Svelte in Vite.",
+	"main": "src/lib/store.ts",
+	"dependencies": {
+		"esbuild": "^0.15.12",
+		"esbuild-darwin-arm64": "^0.15.12",
+		"debug": "^4.3.4",
+		"deepmerge": "^4.2.2",
+		"fsevents": "^2.3.2",
+		"estree-walker": "^2.0.2",
+		"has": "^1.0.3",
+		"is-core-module": "^2.11.0",
+		"ms": "^2.1.2",
+		"kleur": "^4.1.5",
+		"function-bind": "^1.1.1",
+		"magic-string": "^0.26.7",
+		"nanoid": "^3.3.4",
+		"path-parse": "^1.0.7",
+		"rollup": "^2.78.1",
+		"picocolors": "^1.0.0",
+		"postcss": "^8.4.18",
+		"source-map-js": "^1.0.2",
+		"picomatch": "^2.3.1",
+		"sourcemap-codec": "^1.4.8",
+		"resolve": "^1.22.1",
+		"supports-preserve-symlinks-flag": "^1.0.0",
+		"svelte-hmr": "^0.15.0"
+	},
+	"keywords": [
+		"svelte",
+		"fetchable",
+		"store",
+		"sveltekit"
+	],
+	"author": "Ludvík Prokopec",
+	"license": "MIT"
+}
