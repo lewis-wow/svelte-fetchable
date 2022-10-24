@@ -9,11 +9,11 @@
 
 <main>
   <div>
-	{#if $loading}
-	  <span>loading...</span>
-	{:else}
-	  <span>result: {JSON.stringify($result)}</span>
-	{/if}
+    {#if $loading}
+      <span>loading...</span>
+    {:else}
+      <span>result: {JSON.stringify($result)}</span>
+    {/if}
   </div>
 
   <button on:click={() => result.fetch()}>Fetch</button>
