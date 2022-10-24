@@ -1,7 +1,7 @@
 {
 	"name": "svelte-fetchable",
 	"private": false,
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -47,5 +47,10 @@
 		"sveltekit"
 	],
 	"author": "Ludvík Prokopec",
-	"license": "MIT"
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lewis-wow/svelte-fetchable.git"
+	},
+	"homepage": "https://github.com/lewis-wow/svelte-fetchable#readme"
 }

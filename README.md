@@ -1,5 +1,9 @@
 # Svelte fetchable
 
+```bash
+npm i svelte-fetchable
+```
+
 ```svelte
 <script>
   import { loadable } from 'svelte-fetchable'
