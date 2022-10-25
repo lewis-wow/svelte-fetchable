@@ -1,50 +1,39 @@
 <script>
 	import { fetchable } from './lib/store'
+	import axios from 'axios'
 
-	const post = (path, { body, signal }) => {
-		const opts = {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			mode: 'cors',
-			credentials: 'include',
-			body,
-			signal,
-		}
+	const usingAxios = (path, data, config) => axios.post(path, data, config).then((res) => res.data)
+	const usingFetch = (path, data, config) => fetch(path, { ...config, body: JSON.stringify(data), method: 'POST' }).then((res) => res.json())
 
-		return fetch(path, opts)
-			.then(async (r) => {
-				if (r.status >= 200 && r.status < 400) {
-					return await r.text()
-				} else {
-					return await r.text()
-				}
-			})
-			.then((str) => {
-				try {
-					return JSON.parse(str)
-				} catch (err) {
-					return str
-				}
-			})
-	}
+	const loadableAxios = fetchable(usingAxios)
+	const loadableFetch = fetchable(usingFetch)
 
-	const loadable = fetchable(post)
-
-	const [result, loading] = loadable('https://jsonplaceholder.typicode.com/posts')
-
-	console.log(result, loading)
+	const [resultAxios, loadingAxios] = loadableAxios('https://jsonplaceholder.typicode.com/posts')
+	const [resultFetch, loadingFetch] = loadableFetch('https://jsonplaceholder.typicode.com/posts')
 </script>
 
 <main>
 	<div>
-		{#if $loading}
+		<h1>Axios</h1>
+		{#if $loadingAxios}
 			<span>loading...</span>
 		{:else}
-			<span>result: {JSON.stringify($result)}</span>
+			<span>result: {JSON.stringify($resultAxios)}</span>
 		{/if}
+
+		<button on:click={() => resultAxios.fetch()}>Fetch</button>
+		<button on:click={() => resultAxios.abort()}>Abort</button>
 	</div>
 
-	<button on:click={() => result.fetch()}>Fetch</button>
+	<div>
+		<h1>Fetch</h1>
+		{#if $loadingFetch}
+			<span>loading...</span>
+		{:else}
+			<span>result: {JSON.stringify($resultFetch)}</span>
+		{/if}
 
-	<button on:click={() => result.abort()}>Abort</button>
+		<button on:click={() => resultFetch.fetch()}>Fetch</button>
+		<button on:click={() => resultFetch.abort()}>Abort</button>
+	</div>
 </main>
