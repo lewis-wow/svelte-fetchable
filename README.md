@@ -1,7 +1,7 @@
 # Cofein (svelte fetchable)
 
 ```bash
-npm i svelte-fetchable
+npm i cofein
 ```
 
 ## Svelte fetchable using Axios
