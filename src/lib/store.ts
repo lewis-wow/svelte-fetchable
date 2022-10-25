@@ -1,87 +1,49 @@
-import { writable } from 'svelte/store'
+import { Subscriber, Unsubscriber, writable } from 'svelte/store'
 
-const post = (path: string, body: any = null) => {
-	const opts: RequestInit = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		mode: 'cors',
-		credentials: 'include',
+class FetchableStore {
+	public subscribe: (this: void, run: Subscriber<null>, invalidate?: any) => Unsubscriber
+	private set: (this: void, value: null) => void
+	private isFetching = writable(false)
+	private initBody: { [key: string]: string }
+	private abortController = new AbortController()
+	private path: string
+	private send: (input: RequestInfo | URL, init?: RequestInit) => Promise<any>
+
+	constructor(path: string, initBody = {}, send) {
+		const { subscribe, set } = writable(null)
+		this.subscribe = subscribe
+		this.set = set
+		this.initBody = initBody
+		this.path = path
+		this.send = send
 	}
 
-	if (body) {
-		opts.body = JSON.stringify(body)
-	}
+	fetch(fetchBody = {}, headers = new Headers()) {
+		this.isFetching.set(true)
+		const body = Object.assign(this.initBody, fetchBody)
+		const signal = this.abortController.signal
 
-	return fetch(path, opts)
-		.then(async (r) => {
-			if (r.status >= 200 && r.status < 400) {
-				return await r.text()
-			} else {
-				return await r.text()
-			}
+		this.send(this.path, { body: JSON.stringify(body), signal, headers }).then((result) => {
+			this.set(result)
+			this.isFetching.set(false)
 		})
-		.then((str) => {
-			try {
-				return JSON.parse(str)
-			} catch (err) {
-				return str
-			}
-		})
-}
 
-class FetchArray extends Array {
-	caller: (fetchBody, then) => void
-
-	constructor(items, caller = () => { }) {
-		super()
-		this.push(...items)
-		this.caller = caller
-	}
-
-	setFetch(caller) {
-		this.caller = caller
 		return this
 	}
 
-	fetch(fetchBody = {}, then = () => { }) {
-		return this.caller(fetchBody, then)
-	}
-}
+	abort() {
+		this.abortController.abort()
+		this.isFetching.set(false)
 
-export const fetchable = (path: string, initBody = {}, send = post) => {
-	const { subscribe, set } = writable(null)
+		this.abortController = new AbortController()
 
-	return {
-		subscribe,
-		fetch(fetchBody = {}, then = (result) => { }) {
-			const body = Object.assign(initBody, fetchBody)
-
-			send(path, body).then((result) => {
-				set(result)
-				then(result)
-			})
-
-			return this
-		}
-	}
-}
-
-export const loadable = (path: string, initBody = {}, send = post) => {
-	const fetcher = fetchable(path, initBody, send)
-	const fetchCaller = fetcher.fetch
-
-	const isFetching = writable(false)
-
-	fetcher.fetch = (fetchBody = {}, then = () => null) => {
-		isFetching.set(true)
-
-		fetchCaller(fetchBody, (result) => {
-			isFetching.set(false)
-			then(result)
-		})
-
-		return new FetchArray([fetcher, isFetching], fetcher.fetch)
+		return this
 	}
 
-	return new FetchArray([fetcher, isFetching], fetcher.fetch)
+	*[Symbol.iterator]() {
+		yield this
+		yield this.isFetching
+	};
 }
+
+export const fetchable = (send) => (path: string, initBody = {}) => new FetchableStore(path, initBody, send)
