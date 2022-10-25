@@ -1,10 +1,10 @@
 {
-	"name": "svelte-fetchable",
+	"name": "cofein",
 	"private": false,
-	"version": "0.1.0",
+	"version": "0.0.1",
 	"type": "module",
 	"main": "src/lib/store.ts",
-	"description": "This template should help get you started developing with Svelte in Vite.",
+	"description": "Svelte fetchable store.",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
@@ -14,7 +14,9 @@
 		"svelte",
 		"fetchable",
 		"store",
-		"sveltekit"
+		"sveltekit",
+		"svelte-fetchable",
+		"cofein"
 	],
 	"author": "Ludvík Prokopec",
 	"license": "MIT",

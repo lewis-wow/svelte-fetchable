@@ -1,4 +1,4 @@
-# Svelte fetchable
+# Cofein (svelte fetchable)
 
 ```bash
 npm i svelte-fetchable
@@ -8,7 +8,7 @@ npm i svelte-fetchable
 
 ```svelte
 <script>
-  import { fetchable } from 'svelte-fetchable'
+  import { fetchable } from 'cofein'
   const loadable = fetchable((path, data, config) => 
     axios.post(path, data, config).then((res) => res.data)
   )
@@ -36,7 +36,7 @@ npm i svelte-fetchable
 
 ```svelte
 <script>
-  import { fetchable } from 'svelte-fetchable'
+  import { fetchable } from 'cofein'
   const loadable = fetchable((path, data, config) => fetch(path, { 
       ...config, 
       body: JSON.stringify(data), 
