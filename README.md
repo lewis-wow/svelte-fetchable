@@ -1,64 +1,29 @@
 # Cofein (svelte fetchable)
 
 ```bash
-npm i cofein
+npm i svelte-fetchable
 ```
-
-## Svelte fetchable using Axios
 
 ```svelte
 <script>
-  import { fetchable } from 'cofein'
-  const loadable = fetchable((path, data, config) => 
-    axios.post(path, data, config).then((res) => res.data)
-  )
+	import { fetchable } from 'svelte-fetchable'
 
-  const [result, loading] = loadable('https://jsonplaceholder.typicode.com/posts')
+	const [resultFetch, loadingFetch] = fetchable('https://jsonplaceholder.typicode.com/posts', { method: 'post' })
 </script>
 
 <main>
-  <div>
-    <p>
-      {#if $loading}
-        <span>loading...</span>
-      {:else}
-        <span>result: {JSON.stringify($result)}</span>
-      {/if}
-    </p>
+	<div>
+		<h1>Axios</h1>
+		{#if $loadingFetch}
+			<span>loading...</span>
+		{:else}
+			<span>result: {JSON.stringify($resultFetch)}</span>
+		{/if}
 
-    <button on:click={() => result.fetch()}>Fetch</button>
-    <button on:click={() => result.abort()}>Abort</button>
-  </div>
-</main>
-```
-
-## Svelte fetchable using fetch
-
-```svelte
-<script>
-  import { fetchable } from 'cofein'
-  const loadable = fetchable((path, data, config) => fetch(path, { 
-      ...config, 
-      body: JSON.stringify(data), 
-      method: 'POST' 
-    }).then((res) => res.json())
-  )
-
-  const [result, loading] = loadable('https://jsonplaceholder.typicode.com/posts')
-</script>
-
-<main>
-  <div>
-    <p>
-      {#if $loading}
-        <span>loading...</span>
-      {:else}
-        <span>result: {JSON.stringify($result)}</span>
-      {/if}
-    </p>
-
-    <button on:click={() => result.fetch()}>Fetch</button>
-    <button on:click={() => result.abort()}>Abort</button>
-  </div>
+		<br />
+		<button on:click={() => resultFetch.fetch({ username: 'John Doe' })}>Fetch</button>
+		<br />
+		<button on:click={resultFetch.abort}>Abort</button>
+	</div>
 </main>
 ```

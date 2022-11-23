@@ -1,14 +1,8 @@
 import { Subscriber, Unsubscriber, writable } from 'svelte/store'
 
-interface FetchableStoreFetchOptions {
-	body?: { [key: string | number]: any },
-	headers?: Headers,
-	timeout?: number
-}
-
 interface FetchableStore {
 	subscribe: (this: void, run: Subscriber<any>, invalidate?: any) => Unsubscriber,
-	fetch: (options: FetchableStoreFetchOptions) => FetchableStore,
+	fetch: (body: {} | null) => FetchableStore,
 	abort: () => FetchableStore
 }
 
@@ -16,43 +10,57 @@ interface IsFetching {
 	subscribe: (this: void, run: Subscriber<any>, invalidate?: any) => Unsubscriber
 }
 
+interface FetchOptions {
+	cache?: RequestCache
+	credentials?: RequestCredentials
+	headers?: HeadersInit
+	integrity?: string
+	keepalive?: boolean
+	method?: string
+	mode?: RequestMode
+	redirect?: RequestRedirect
+	referrer?: string
+	referrerPolicy?: ReferrerPolicy
+	window?: null
+	timeout?: number
+}
+
 class ExtendedArray extends Array {
 	constructor(values = [], methods = {}) {
 		super()
-
 		this.push(...values)
 
 		for (const [k, v] of Object.entries(methods)) {
 			this[k] = v
 		}
-
 		Object.freeze(this)
 	}
 }
 
-const fetchableStoreFactory = (path: string, initBody = {}, send): ExtendedArray => {
-	const { subscribe, set } = writable(null)
+const fetchable = <T>(path: string, options: FetchOptions = {}, fetch = window.fetch): ExtendedArray => {
+	const { subscribe, set } = writable<T>(null)
 
 	let abortController = new AbortController()
 	const isFetching = writable(false)
 
 	const store: FetchableStore = {
 		subscribe,
-		fetch(options: FetchableStoreFetchOptions) {
+		fetch(body: {} | null = {}) {
 			isFetching.set(true)
-			const fetchBody = Object.assign(initBody, options?.body)
 
 			const signal = options?.timeout ? AbortSignal.timeout(options.timeout) : abortController.signal
+			delete options.timeout
 
 			signal.addEventListener('abort', (e) => {
 				isFetching.set(false)
 				abortController = new AbortController()
 			})
 
-			send(path, fetchBody, {
+			fetch(path, {
+				...options,
 				signal,
-				headers: options?.headers
-			}).then((result) => {
+				body: JSON.stringify(body),
+			}).then((result) => result.json()).then((result: T) => {
 				set(result)
 				isFetching.set(false)
 			})
@@ -72,4 +80,5 @@ const fetchableStoreFactory = (path: string, initBody = {}, send): ExtendedArray
 	return new ExtendedArray([store, isFetchingStore], { fetch: store.fetch, abort: store.abort })
 }
 
-export const fetchable = (send) => (path: string, initBody = {}) => fetchableStoreFactory(path, initBody, send)
+export default fetchable
+export { fetchable }
