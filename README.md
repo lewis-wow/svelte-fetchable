@@ -6,9 +6,9 @@ npm i svelte-fetchable
 
 ```svelte
 <script>
-  import { fetchable } from 'svelte-fetchable'
+  import fetchable from 'svelte-fetchable'
 
-  const [resultFetch, loadingFetch] = fetchable('https://jsonplaceholder.typicode.com/posts', { method: 'post' })
+  const [resultFetch, loadingFetch] = fetchable.post('https://jsonplaceholder.typicode.com/posts')
 </script>
 
 <main>

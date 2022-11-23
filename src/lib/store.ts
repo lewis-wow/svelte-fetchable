@@ -16,7 +16,6 @@ interface FetchOptions {
 	headers?: HeadersInit
 	integrity?: string
 	keepalive?: boolean
-	method?: string
 	mode?: RequestMode
 	redirect?: RequestRedirect
 	referrer?: string
@@ -26,7 +25,7 @@ interface FetchOptions {
 }
 
 class ExtendedArray extends Array {
-	constructor(values = [], methods = {}) {
+	constructor(values: any[] = [], methods = {}) {
 		super()
 		this.push(...values)
 
@@ -37,8 +36,8 @@ class ExtendedArray extends Array {
 	}
 }
 
-const fetchable = <T>(path: string, options: FetchOptions = {}, fetch = window.fetch): ExtendedArray => {
-	const { subscribe, set } = writable<T>(null)
+const fetchable = (path: string, options: any, fetch = window.fetch): ExtendedArray => {
+	const { subscribe, set } = writable(null)
 
 	let abortController = new AbortController()
 	const isFetching = writable(false)
@@ -59,8 +58,8 @@ const fetchable = <T>(path: string, options: FetchOptions = {}, fetch = window.f
 			fetch(path, {
 				...options,
 				signal,
-				body: JSON.stringify(body),
-			}).then((result) => result.json()).then((result: T) => {
+				body: body ? JSON.stringify(body) : undefined,
+			}).then((result) => result.json()).then((result) => {
 				set(result)
 				isFetching.set(false)
 			})
@@ -80,5 +79,10 @@ const fetchable = <T>(path: string, options: FetchOptions = {}, fetch = window.f
 	return new ExtendedArray([store, isFetchingStore], { fetch: store.fetch, abort: store.abort })
 }
 
-export default fetchable
-export { fetchable }
+const post = (path: string, options: FetchOptions = {}) => fetchable(path, { ...options, method: 'post' })
+const get = (path: string, options: FetchOptions = {}) => fetchable(path, { ...options, method: 'get' })
+const put = (path: string, options: FetchOptions = {}) => fetchable(path, { ...options, method: 'put' })
+const del = (path: string, options: FetchOptions = {}) => fetchable(path, { ...options, method: 'delete' })
+
+export { post, get, put, del }
+export default { post, get, put, del }

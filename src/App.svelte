@@ -1,7 +1,7 @@
 <script>
-	import { fetchable } from './lib/store'
+	import fetchable from './lib/store'
 
-	const [resultFetch, loadingFetch] = fetchable('https://jsonplaceholder.typicode.com/posts', { method: 'post' })
+	const [resultFetch, loadingFetch] = fetchable.post('https://jsonplaceholder.typicode.com/posts')
 </script>
 
 <main>
