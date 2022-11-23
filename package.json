@@ -1,7 +1,7 @@
 {
 	"name": "svelte-fetchable",
 	"private": false,
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"type": "module",
 	"main": "src/lib/store.ts",
 	"description": "Svelte fetchable store.",
@@ -15,8 +15,7 @@
 		"fetchable",
 		"store",
 		"sveltekit",
-		"svelte-fetchable",
-		"cofein"
+		"svelte-fetchable"
 	],
 	"author": "Ludvík Prokopec",
 	"license": "MIT",
