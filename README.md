@@ -13,7 +13,6 @@ npm i svelte-fetchable
 
 <main>
  <div>
-    <h1>Axios</h1>
     {#if $loadingFetch}
       <span>loading...</span>
     {:else}
